@@ -30,6 +30,8 @@ export default async function LocaleLayout({
         <link href="https://fonts.googleapis.com" rel="preconnect"/>
         <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
         <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js" defer></script>
+        <script noModule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js" defer></script>
       </head>
       <body className="bg-surface text-on-surface font-body-md antialiased selection:bg-primary selection:text-on-primary">
         <NextIntlClientProvider messages={messages}>
