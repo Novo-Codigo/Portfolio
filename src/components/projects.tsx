@@ -4,22 +4,22 @@ import Link from 'next/link';
 export default function Projects() {
   const projects = [
     {
-      title: 'Quantum Logistics',
-      description: 'Streamlined global supply chain data into a single, high-density terminal interface.',
-      img: '',
-      alt: 'Quantum Logistics Terminal UI Mockup'
+      title: 'Nix - Gestão Eleitoral',
+      description: 'An elegant, secure, and user-friendly app designed for managing Brazilian political campaigns effortlessly.',
+      img: '/nix.png',
+      alt: 'Electoral app UI mockup'
     },
     {
-      title: 'Aura Financial',
-      description: 'Re-engineered legacy banking workflows to reduce cognitive load by 40%.',
-      img: '',
-      alt: 'Aura Financial Architectural Diagram'
+      title: 'Click Cidadão',
+      description: 'A digital democracy platform uniting political transparency, public spending oversight, and citizen oversight in one place.',
+      img: '/click-cidadao.png',
+      alt: 'Mockup of a digital democracy and citizen complaint app.'
     },
     {
-      title: 'Nexus Health',
-      description: 'Deployed a raw, secure patient portal prioritizing immediate action and clarity.',
-      img: '',
-      alt: 'Nexus Health Mobile UI Mockup'
+      title: 'CarnavalRio',
+      description: 'A complete digital guide for Brazilian Carnival featuring real-time block tracking, event schedules, and safety alerts.',
+      img: '/carnavalrio.png',
+      alt: 'UI mockup of a Brazilian Carnival app showing street block schedules and maps.'
     }
   ];
 
