@@ -6,5 +6,5 @@ export const {
   redirect,
   usePathname,
   useRouter,
-  getPathnam
+  getPathname
 } = createNavigation(routing);
