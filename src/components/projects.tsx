@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 
@@ -11,9 +11,12 @@ export default function Projects() {
       description: 'An elegant, secure, and user-friendly app designed for managing Brazilian political campaigns effortlessly.',
       img: '/mockups/nix/nix.png',
       gallery: [
-        '/mockups/nix/nix.png',
-        '/mockups/nix/nix_dashboard.png',
-        '/mockups/nix/nix_analytics.png'
+        '/mockups/nix/h1.png',
+        '/mockups/nix/list.png',
+        '/mockups/nix/calendar.png',
+        '/mockups/nix/financial.png',
+        '/mockups/nix/campaign.png',
+        '/mockups/nix/notifications.png',
       ],
       alt: 'Electoral app UI mockup',
       link: '/projects/nix'
@@ -51,6 +54,17 @@ export default function Projects() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState(0);
+
+  useEffect(() => {
+    if (isGalleryOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isGalleryOpen]);
 
   const touchStartX = useRef<number | null>(null);
   const touchEndX = useRef<number | null>(null);
@@ -230,7 +244,7 @@ export default function Projects() {
 
         {/* Immersive Gallery Overlay (Modal) */}
         {isGalleryOpen && (
-          <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-6 md:p-10 animate-fade-in text-white">
+          <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-between p-6 md:p-10 animate-fade-in text-white overflow-y-auto">
             {/* Header */}
             <div className="w-full max-w-5xl flex items-center justify-between border-b border-white/10 pb-4">
               <h3 className="font-headline-md text-headline-md text-white">
