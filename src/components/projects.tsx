@@ -19,7 +19,7 @@ export default function Projects() {
         '/mockups/nix/notifications.png',
       ],
       alt: 'Electoral app UI mockup',
-      link: '/projects/nix'
+      link: 'https://nix-gestao-eleitoral.vercel.app/'
     },
     {
       title: 'Click Cidadão',
@@ -35,19 +35,17 @@ export default function Projects() {
         '/mockups/clickcidadao/gps.png',
       ],
       alt: 'Mockup of a digital democracy and citizen complaint app.',
-      link: '/projects/clickcidadao'
+      link: '#'
     },
     {
       title: 'CarnavalRio',
       description: 'A complete digital guide for Brazilian Carnival featuring real-time block tracking, event schedules, and safety alerts.',
       img: '/mockups/carnavalrio/carnavalrio.png',
       gallery: [
-        '/mockups/carnavalrio/carnavalrio.png',
-        '/mockups/carnavalrio/carnavalrio_schedule.png',
-        '/mockups/carnavalrio/carnavalrio_map.png'
+        '/mockups/coming-soon.jpg'
       ],
       alt: 'UI mockup of a Brazilian Carnival app showing street block schedules and maps.',
-      link: '/projects/carnavalrio'
+      link: '#'
     }
   ];
 
@@ -300,8 +298,20 @@ export default function Projects() {
               {/* About Button Routing to localized link */}
               <Link
                 href={projects[activeIndex].link}
-                onClick={() => setIsGalleryOpen(false)}
-                className="px-8 py-3 rounded-full bg-white hover:bg-gray-100 text-black font-semibold shadow-md hover:shadow-lg transition-all duration-300 flex items-center gap-2 cursor-pointer shrink-0"
+                onClick={(e) => {
+                  if (projects[activeIndex].link === '#') {
+                    e.preventDefault();
+                  } else {
+                    setIsGalleryOpen(false);
+                  }
+                }}
+                className={`px-8 py-3 rounded-full font-semibold shadow-md transition-all duration-300 flex items-center gap-2 shrink-0 ${
+                  projects[activeIndex].link === '#'
+                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed opacity-70'
+                    : 'bg-white hover:bg-gray-100 text-black hover:shadow-lg cursor-pointer'
+                }`}
+                aria-disabled={projects[activeIndex].link === '#'}
+                tabIndex={projects[activeIndex].link === '#' ? -1 : 0}
               >
                 <span>About</span>
                 <span className="material-symbols-outlined text-sm font-bold">arrow_forward</span>
