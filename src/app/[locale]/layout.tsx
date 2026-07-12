@@ -24,7 +24,7 @@ export default async function LocaleLayout({
   const messages = await getMessages();
  
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
         <link href="https://fonts.googleapis.com" rel="preconnect"/>
