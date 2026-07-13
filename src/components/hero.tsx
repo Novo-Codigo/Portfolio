@@ -7,10 +7,10 @@ export default function Hero() {
         {/* Left: Content */}
         <div className="md:col-span-6 flex flex-col gap-6 md:pr-12">
           <h1 className="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary" id="init">
-            High-Signal Value Proposition
+            Engineering Beyond the Surface
           </h1>
           <p className="font-body-md text-body-md text-on-surface-variant max-w-md">
-            Concise, non-exhausting supporting statement. We deliver results without the noise.
+            I architect resilient backend solutions for complex domains. Distributed task queues, heavy data integration, and mission-critical logic - delivered with clean, maintainable code.
           </p>
           <form className="mt-4 flex flex-col sm:flex-row gap-4 w-full max-w-md">
             <div className="flex-grow">
@@ -33,7 +33,7 @@ export default function Hero() {
           <Image
             alt="Founder Portrait"
             className="object-cover w-full h-full rounded-md"
-            src="/1000337673.png"
+            src="/1000337675.png"
             fill
             priority
           />
