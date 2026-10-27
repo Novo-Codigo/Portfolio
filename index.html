@@ -1,366 +1,480 @@
-<!doctype html>
-<html lang="pt-BR">
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Samuel Melo | Desenvolvedor de software, do zero ao deploy</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap" rel="stylesheet">
-<style>
-:root{--case-nix:#4B3FA8;--case-click:#07745A;--case-carnaval:#8F5C00;/* cor de fundo da seção Cases (identidade do app) */--cases-from:#4B3FA8;--bg:#EEEAFB;--ink:#17132F;--mute:#585377;--line:#C9C2E6;--panel:#FFFFFF;--brass:#8F5C00;--mint:#07745A;--violet:#4B3FA8;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#15112B;--ink:#EDE8FA;--mute:#A59FC8;--line:#322B5E;--panel:#1E1840;--brass:#F2B544;--mint:#5CF2C0;--violet:#9A8CFF;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#15112B;--ink:#EDE8FA;--mute:#A59FC8;--line:#322B5E;--panel:#1E1840;--brass:#F2B544;--mint:#5CF2C0;--violet:#9A8CFF;color-scheme:dark}
-html{scroll-padding-top:calc(72px + env(safe-area-inset-top,0px));scroll-behavior:smooth}
-*,*::before,*::after{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:400 1.06rem/1.6 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:30}
-a{color:inherit}
-:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
-.px{font-family:"Pixelify Sans","Courier New",monospace;font-weight:500}
-.wrap{width:min(1120px,100% - 2.5rem);margin-inline:auto}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--bg);border-bottom:1px solid var(--line)}
-header .wrap{display:flex;justify-content:space-between;align-items:center;height:60px}
-header b{font-weight:700;letter-spacing:-.01em}
-nav a{margin-left:1.4rem;text-decoration:none;color:var(--mute)}
-nav a:hover{color:var(--ink)}
-/* hero */
-.hero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(2rem,6vw,5rem) 0 3rem}
-.hero-icons{position:absolute;inset:0;z-index:-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:38px 34px;padding:24px;color:var(--mute);opacity:.2;pointer-events:none}
-.hi{width:30px;height:30px;justify-self:center}
-.hi.r1{transform:rotate(-14deg)}.hi.r2{transform:rotate(9deg)}.hi.r3{transform:rotate(-4deg)}
-
-h1{font-size:clamp(2.8rem,6.2vw,5.6rem);line-height:.88;margin:0 0 1.4rem;font-weight:800;font-stretch:75%;letter-spacing:-.035em}
-.lead{max-width:34ch;font-size:1.25rem;margin:0 0 1.8rem}
-.cta{display:flex;flex-wrap:wrap;gap:.8rem}
-.btn{display:inline-block;padding:.8rem 1.3rem;border:2px solid var(--ink);border-radius:3px 12px 3px 12px;text-decoration:none;font-weight:600;background:var(--ink);color:var(--bg);transition:transform .15s}
-.btn.alt{background:transparent;color:var(--ink)}
-.btn:hover{transform:translate(-2px,-2px)}
-.btn svg{width:1.05em;height:1.05em;vertical-align:-.16em;margin-right:.45em}
-.stage{position:relative;min-height:470px}
-.rig{position:absolute;inset:1.1rem}
-#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:pan-y;cursor:crosshair}
-.labs button{position:absolute;bottom:0;width:78px;margin-left:-39px;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:3px 10px 3px 10px;padding:.3rem 0 .25rem;font:inherit;font-size:.88rem;line-height:1.15;cursor:pointer;text-align:center}
-.labs button small{display:block;color:var(--mute);font-size:.72rem}
-.labs button.got{border-color:var(--mint);color:var(--mint)}
-.labs button:last-child{border-color:var(--brass)}
-.hud{position:absolute;left:0;top:0;right:0;display:flex;justify-content:space-between;align-items:center;font-size:.95rem;pointer-events:none}
-.hud>*{pointer-events:auto}
-.pips{display:inline-flex;gap:4px;margin-left:.5rem;vertical-align:middle}
-.pips i{width:14px;height:14px;border:2px solid var(--mute);display:block}
-.pips i.on{background:var(--mint);border-color:var(--mint)}
-.hud button{font:inherit;background:none;border:2px solid var(--line);color:var(--mute);padding:.1rem .6rem;border-radius:2px;cursor:pointer}
-.hint{grid-column:1/-1;color:var(--mute);font-size:.95rem;margin:.5rem 0 0}
-#toast{position:fixed;left:50%;bottom:calc(1.4rem + env(safe-area-inset-bottom,0px));transform:translate(-50%,160%);background:var(--ink);color:var(--bg);padding:.9rem 1.3rem;border-radius:3px 14px 3px 14px;z-index:40;transition:transform .45s cubic-bezier(.2,1.4,.4,1);max-width:min(92vw,420px)}
-#toast.show{transform:translate(-50%,0)}
-#toast b{display:block;font-size:1.05rem}
-/* sections */
-section{padding:clamp(3rem,8vw,6rem) 0;border-top:1px solid var(--line)}
-#cases{background:linear-gradient(170deg,color-mix(in srgb,var(--cases-from) 24%,var(--bg)) 0%,var(--bg) 65%)}
-h2{font-size:clamp(2.4rem,6vw,4.6rem);line-height:.95;margin:0 0 1rem;font-weight:800;font-stretch:80%;letter-spacing:-.03em}
-h3{font-size:1.5rem;line-height:1.15;margin:0 0 .6rem;font-weight:700;letter-spacing:-.01em}
-.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem 3rem;margin:2.2rem 0}
-.cols p{margin:0;max-width:62ch}
-.sub{max-width:52ch;font-size:1.2rem;margin:0 0 .6rem}
-.tags{display:flex;flex-wrap:wrap;gap:.5rem;margin:1.2rem 0 0;padding:0;list-style:none}
-.tags li{border:2px solid var(--mint);color:var(--mint);padding:.1rem .7rem;border-radius:2px;font-size:.95rem}
-/* timeline */
-.tl{margin:1rem 0 2.6rem;max-width:860px}
-.tl .row{margin:0 0 1.1rem}
-.tl .row span{display:block;margin-bottom:.3rem}
-.tl .row em{font-style:normal;color:var(--mute)}
-.track{height:20px;background:var(--panel);border:1px solid var(--line)}
-.bar{height:100%;display:flex;transform:scaleX(0);transform-origin:left;transition:transform 1.3s cubic-bezier(.2,.8,.2,1)}
-.in .bar{transform:scaleX(1)}
-.in .r2 .bar{transition-delay:.5s}.in .r3 .bar{transition-delay:1s}
-.bar i{display:block;height:100%;background:var(--violet)}
-.bar i+i{background:repeating-linear-gradient(45deg,var(--violet) 0 5px,transparent 5px 10px)}
-.r1 .bar i{background:var(--brass)}
-.ticks{display:flex;color:var(--mute);font-size:.85rem}.ticks span{flex:1}
-/* flip cards */
-.deck{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.2rem;perspective:1000px;margin-top:1.4rem}
-.card{display:grid;border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.3,.8,.2,1)}
-.card[aria-pressed="true"]{transform:rotateY(180deg)}
-.face{grid-area:1/1;display:block;padding:1.2rem 1.2rem 1.3rem;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--violet);border-radius:2px 16px 2px 16px;font-size:.98rem}
-.face b{display:block;font-size:1.2rem;line-height:1.15;margin-bottom:.5rem}
-.face.back{transform:rotateY(180deg);border-left-color:var(--brass);background:var(--bg);border-color:var(--brass)}
-.face .px{display:block;color:var(--mute);margin-top:.8rem;font-size:.9rem}
-.res{background:var(--panel);border:1px solid var(--line);border-radius:2px 18px 2px 18px;padding:1.4rem 1.6rem;margin:2rem 0 0}
-.res p{margin:0 0 .6rem;max-width:70ch}
-ul.l{margin:0;padding-left:1.1rem}ul.l li{margin:0 0 .5rem;max-width:56ch}
-.decs{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.2rem;margin:1.4rem 0 2.4rem}
-.dec{background:var(--panel);border:1px solid var(--line);border-left:6px solid var(--dc,var(--case-carnaval));border-radius:2px 16px 2px 16px;padding:1.2rem 1.2rem 1.3rem;font-size:.98rem}
-.dec b{display:block;font-size:1.2rem;line-height:1.15;margin-bottom:.5rem}
-.dec p{margin:0 0 .7rem}.dec p:last-child{margin:0}.dec .to{color:var(--mute)}
-.stack{color:var(--mute);margin-top:1.6rem}
-/* more */
-.about p{max-width:46ch;font-size:1.25rem;margin:0 0 1rem}
-.contact h2{max-width:12ch}
-.links{display:flex;flex-wrap:wrap;gap:.8rem;margin-top:1.6rem}
-footer{padding:2rem 0 3rem;color:var(--mute);border-top:1px solid var(--line)}
-.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
-.cell{border:1px solid var(--line);border-radius:3px 22px 3px 22px;background:var(--bg)}
-.c-title{grid-column:1/3;grid-row:1/3;display:flex;flex-direction:column;justify-content:center;padding:clamp(1.4rem,3vw,2.4rem);background:var(--panel)}
-.c-vio{grid-column:3/5;grid-row:1/3}
-.pad{--pb:var(--panel);--pf:var(--ink);--bc:var(--line);--sh:var(--line);position:relative;min-height:165px;padding:0 8%;display:grid;grid-template-columns:1.25fr 1fr;align-items:center;justify-items:center;border:2px solid var(--bc);background:var(--pb);color:var(--pf);cursor:pointer;box-shadow:0 5px 0 var(--sh);transition:transform .12s,box-shadow .12s}
-.pad:hover{transform:translateY(-2px)}
-.pad:active{transform:translateY(4px);box-shadow:0 1px 0 var(--sh)}
-.pad svg{aspect-ratio:1;pointer-events:none}
-.pad .g{width:min(92px,72%)}.pad .n{width:min(60px,64%)}.pad .t{position:absolute;top:12px;right:14px;width:22px;opacity:.75}
-.p2{--pb:var(--violet);--pf:var(--bg);--bc:var(--violet);--sh:var(--ink)}
-.p3{--pb:var(--brass);--pf:var(--bg);--bc:var(--brass);--sh:var(--ink)}
-.p4{--pb:transparent;--pf:var(--mint);--bc:var(--mint);--sh:var(--mint)}
-.pad.hit svg{animation:pop .42s}.pad.hit .n{animation-delay:.06s}
-@keyframes pop{40%{transform:translateY(-10px) rotate(-8deg) scale(1.15)}}
-.tabs{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:1rem;margin:1.6rem 0 2.6rem}
-.tab{text-align:left;font:inherit;color:inherit;background:var(--panel);border:2px solid var(--line);border-radius:3px 16px 3px 16px;padding:1rem 1.2rem;cursor:pointer;transition:transform .15s,box-shadow .15s}
-.tab b{display:block;font-size:1.35rem;line-height:1.1;margin-bottom:.3rem}
-.tab span{color:var(--mute);font-size:.95rem;display:block}
-.tab:hover{transform:translate(-2px,-2px)}
-.tab{--tc:var(--violet)}
-.tab[data-k="nix"]{--tc:var(--case-nix)}
-.tab[data-k="click"]{--tc:var(--case-click)}
-.tab[data-k="carnaval"]{--tc:var(--case-carnaval)}
-.tab[aria-selected="true"]{border-color:var(--tc);box-shadow:6px 6px 0 var(--tc)}
-.tab .tab-logo{display:flex;width:44px;height:44px;margin:0 0 .6rem;font-size:.66rem;color:var(--mute)}
-.logo-slot{width:112px;height:112px;margin:0 0 1rem;border:2px dashed var(--line);border-radius:3px 18px 3px 18px;display:flex;align-items:center;justify-content:center;color:var(--mute);font-size:.8rem;overflow:hidden}
-.logo-slot img{max-width:100%;max-height:100%;object-fit:contain}
-.ct{font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;margin:0 0 .6rem;font-weight:800;font-stretch:80%;letter-spacing:-.03em}
-@media (max-width:860px){.bento{grid-template-columns:repeat(2,1fr)}.c-title,.c-vio{grid-column:1/-1;grid-row:auto}.stage{min-height:440px}.labs button{width:66px;margin-left:-33px;font-size:.8rem}.tabs{grid-template-columns:1fr}nav a{margin-left:.9rem}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.bar,#toast,.btn,.pad{transition:none}.pad.hit svg{animation:none}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Samuel Melo | Software Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Pixelify+Sans:wght@500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="make.css">
 </head>
+
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>
-<symbol id="i-n8" viewBox="0 0 24 24"><path d="M10 18V4l9 3v4l-9-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="18" r="3.2" fill="currentColor"/></symbol>
-<symbol id="i-n2" viewBox="0 0 24 24"><path d="M8 17V6l11-2v11" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 6l11-2v4L8 10z" fill="currentColor"/><circle cx="5.5" cy="17.5" r="2.8" fill="currentColor"/><circle cx="16.5" cy="15.5" r="2.8" fill="currentColor"/></symbol>
-<symbol id="i-sharp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4v16M15 4v16M5 9l14-3M5 18l14-3"/></symbol>
-<symbol id="i-pad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><path d="M6 7h12a4 4 0 0 1 4 4v2a3 3 0 0 1-5.5 1.7L15 13H9l-1.5 1.7A3 3 0 0 1 2 13v-2a4 4 0 0 1 4-4z"/><path d="M7 9.5v3M5.5 11h3"/><circle cx="16" cy="10" r=".8" fill="currentColor"/><circle cx="18.5" cy="11.5" r=".8" fill="currentColor"/></symbol>
-<symbol id="i-dpad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></symbol>
-<symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21l-8.2-8.3a4.8 4.8 0 0 1 8.2-4.7 4.8 4.8 0 0 1 8.2 4.7z"/></symbol>
-<symbol id="i-coin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v10"/></symbol>
-<symbol id="i-star" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 17.2l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z"/></symbol>
-<symbol id="i-stick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"><circle cx="12" cy="6" r="3.5" fill="currentColor"/><path d="M12 9.5V15M4 21h16v-6H4z"/></symbol>
-</defs></svg>
-<header><div class="wrap"><b>Samuel Melo</b><nav><a href="#cases">Cases</a><a href="#contato">Contato</a></nav></div></header>
-
-<main>
-<div class="hero"><div class="hero-icons" aria-hidden="true"><svg class="hi r1"><use href="#i-n8"/></svg><svg class="hi r2"><use href="#i-dpad"/></svg><svg class="hi r3"><use href="#i-n2"/></svg><svg class="hi r1"><use href="#i-heart"/></svg><svg class="hi r2"><use href="#i-sharp"/></svg><svg class="hi r3"><use href="#i-pad"/></svg><svg class="hi r1"><use href="#i-coin"/></svg><svg class="hi r2"><use href="#i-star"/></svg><svg class="hi r3"><use href="#i-stick"/></svg><svg class="hi r1"><use href="#i-n8"/></svg><svg class="hi r2"><use href="#i-dpad"/></svg><svg class="hi r3"><use href="#i-n2"/></svg><svg class="hi r1"><use href="#i-heart"/></svg><svg class="hi r2"><use href="#i-sharp"/></svg><svg class="hi r3"><use href="#i-pad"/></svg><svg class="hi r1"><use href="#i-coin"/></svg><svg class="hi r2"><use href="#i-star"/></svg><svg class="hi r3"><use href="#i-stick"/></svg><svg class="hi r1"><use href="#i-n8"/></svg><svg class="hi r2"><use href="#i-dpad"/></svg><svg class="hi r3"><use href="#i-n2"/></svg><svg class="hi r1"><use href="#i-heart"/></svg><svg class="hi r2"><use href="#i-sharp"/></svg><svg class="hi r3"><use href="#i-pad"/></svg><svg class="hi r1"><use href="#i-coin"/></svg><svg class="hi r2"><use href="#i-star"/></svg><svg class="hi r3"><use href="#i-stick"/></svg><svg class="hi r1"><use href="#i-n8"/></svg><svg class="hi r2"><use href="#i-dpad"/></svg><svg class="hi r3"><use href="#i-n2"/></svg><svg class="hi r1"><use href="#i-heart"/></svg><svg class="hi r2"><use href="#i-sharp"/></svg><svg class="hi r3"><use href="#i-pad"/></svg><svg class="hi r1"><use href="#i-coin"/></svg><svg class="hi r2"><use href="#i-star"/></svg><svg class="hi r3"><use href="#i-stick"/></svg><svg class="hi r1"><use href="#i-n8"/></svg><svg class="hi r2"><use href="#i-dpad"/></svg><svg class="hi r3"><use href="#i-n2"/></svg><svg class="hi r1"><use href="#i-heart"/></svg><svg class="hi r2"><use href="#i-sharp"/></svg><svg class="hi r3"><use href="#i-pad"/></svg><svg class="hi r1"><use href="#i-coin"/></svg><svg class="hi r2"><use href="#i-star"/></svg><svg class="hi r3"><use href="#i-stick"/></svg></div><div class="wrap bento">
-  <div class="cell c-title">
-    <h1>Do zero ao deploy.</h1>
-    <p class="lead">Sou Samuel, desenvolvedor de software. Há 5 anos levo produtos full-cycle da primeira tabela até as lojas.</p>
-    <div class="cta"><a class="btn" href="#cases">Ver entregas reais</a><a class="btn alt" href="#contato">Falar comigo</a></div>
-  </div>
-  <div class="cell c-vio stage" id="stage">
-    <div class="rig" id="rig">
-      <canvas id="cv" aria-label="Violino interativo: passe o cursor sobre as cordas para tocar"></canvas>
-      <div class="hud px"><span>cordas <span class="pips" id="pips"><i></i><i></i><i></i><i></i></span></span><button id="snd" aria-pressed="true">som on</button></div>
-      <div class="labs px" id="labs"></div>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <symbol id="i-n8" viewBox="0 0 24 24">
+        <path d="M10 18V4l9 3v4l-9-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+        <circle cx="7" cy="18" r="3.2" fill="currentColor" />
+      </symbol>
+      <symbol id="i-n2" viewBox="0 0 24 24">
+        <path d="M8 17V6l11-2v11" fill="none" stroke="currentColor" stroke-width="2" />
+        <path d="M8 6l11-2v4L8 10z" fill="currentColor" />
+        <circle cx="5.5" cy="17.5" r="2.8" fill="currentColor" />
+        <circle cx="16.5" cy="15.5" r="2.8" fill="currentColor" />
+      </symbol>
+      <symbol id="i-sharp" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round">
+        <path d="M9 4v16M15 4v16M5 9l14-3M5 18l14-3" />
+      </symbol>
+      <symbol id="i-pad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"
+        stroke-linecap="round">
+        <path d="M6 7h12a4 4 0 0 1 4 4v2a3 3 0 0 1-5.5 1.7L15 13H9l-1.5 1.7A3 3 0 0 1 2 13v-2a4 4 0 0 1 4-4z" />
+        <path d="M7 9.5v3M5.5 11h3" />
+        <circle cx="16" cy="10" r=".8" fill="currentColor" />
+        <circle cx="18.5" cy="11.5" r=".8" fill="currentColor" />
+      </symbol>
+      <symbol id="i-dpad" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linejoin="round">
+        <path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z" />
+      </symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 21l-8.2-8.3a4.8 4.8 0 0 1 8.2-4.7 4.8 4.8 0 0 1 8.2 4.7z" />
+      </symbol>
+      <symbol id="i-coin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="8.5" />
+        <path d="M12 7v10" />
+      </symbol>
+      <symbol id="i-star" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.5 1.3 6.6L12 17.2l-5.9 3.3 1.3-6.6L2.5 9.4l6.6-.8z" />
+      </symbol>
+      <symbol id="i-stick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linejoin="round" stroke-linecap="round">
+        <circle cx="12" cy="6" r="3.5" fill="currentColor" />
+        <path d="M12 9.5V15M4 21h16v-6H4z" />
+      </symbol>
+    </defs>
+  </svg>
+  <header>
+    <div class="wrap"><b>Samuel Melo</b>
+      <nav><a href="#cases">Cases</a><a href="#contato">Contact</a></nav>
     </div>
-  </div>
-  <p class="hint">Cada corda é uma etapa do produto: toque as quatro para completar a fase.</p>
-</div></div>
+  </header>
 
-<section id="cases"><div class="wrap">
-  <h2>Cases</h2>
-  <p class="sub">Escolha um produto para ver o problema, o meu papel e o resultado.</p>
-  <div class="tabs" role="tablist" aria-label="Cases" id="tabs"></div>
-  <div id="case-nix" role="tabpanel">
-  <h3 class="ct">Nix</h3>
-  <p class="sub">Gestão de campanhas eleitorais: SaaS em app Android, iOS e web.</p>
-  <ul class="tags"><li>Play Store</li><li>App Store</li><li>Web</li><li>Assinatura em produção</li></ul>
+  <main>
+    <div class="hero">
+      <div class="hero-icons" aria-hidden="true"><svg class="hi r1">
+          <use href="#i-n8" />
+        </svg><svg class="hi r2">
+          <use href="#i-dpad" />
+        </svg><svg class="hi r3">
+          <use href="#i-n2" />
+        </svg><svg class="hi r1">
+          <use href="#i-heart" />
+        </svg><svg class="hi r2">
+          <use href="#i-sharp" />
+        </svg><svg class="hi r3">
+          <use href="#i-pad" />
+        </svg><svg class="hi r1">
+          <use href="#i-coin" />
+        </svg><svg class="hi r2">
+          <use href="#i-star" />
+        </svg><svg class="hi r3">
+          <use href="#i-stick" />
+        </svg><svg class="hi r1">
+          <use href="#i-n8" />
+        </svg><svg class="hi r2">
+          <use href="#i-dpad" />
+        </svg><svg class="hi r3">
+          <use href="#i-n2" />
+        </svg><svg class="hi r1">
+          <use href="#i-heart" />
+        </svg><svg class="hi r2">
+          <use href="#i-sharp" />
+        </svg><svg class="hi r3">
+          <use href="#i-pad" />
+        </svg><svg class="hi r1">
+          <use href="#i-coin" />
+        </svg><svg class="hi r2">
+          <use href="#i-star" />
+        </svg><svg class="hi r3">
+          <use href="#i-stick" />
+        </svg><svg class="hi r1">
+          <use href="#i-n8" />
+        </svg><svg class="hi r2">
+          <use href="#i-dpad" />
+        </svg><svg class="hi r3">
+          <use href="#i-n2" />
+        </svg><svg class="hi r1">
+          <use href="#i-heart" />
+        </svg><svg class="hi r2">
+          <use href="#i-sharp" />
+        </svg><svg class="hi r3">
+          <use href="#i-pad" />
+        </svg><svg class="hi r1">
+          <use href="#i-coin" />
+        </svg><svg class="hi r2">
+          <use href="#i-star" />
+        </svg><svg class="hi r3">
+          <use href="#i-stick" />
+        </svg><svg class="hi r1">
+          <use href="#i-n8" />
+        </svg><svg class="hi r2">
+          <use href="#i-dpad" />
+        </svg><svg class="hi r3">
+          <use href="#i-n2" />
+        </svg><svg class="hi r1">
+          <use href="#i-heart" />
+        </svg><svg class="hi r2">
+          <use href="#i-sharp" />
+        </svg><svg class="hi r3">
+          <use href="#i-pad" />
+        </svg><svg class="hi r1">
+          <use href="#i-coin" />
+        </svg><svg class="hi r2">
+          <use href="#i-star" />
+        </svg><svg class="hi r3">
+          <use href="#i-stick" />
+        </svg></div>
+      <div class="wrap bento">
+        <div class="cell c-title">
+          <h1>From zero to deploy.</h1>
+          <p class="lead">I am Samuel, software developer. For 5 years delivering full-cycle products from initial
+            database schemas to app stores.</p>
+          <div class="cta"><a class="btn" href="#cases">View production cases</a><a class="btn alt" href="#contato">Get
+              in touch</a></div>
+        </div>
+        <div class="cell c-vio stage" id="stage">
+          <div class="rig" id="rig">
+            <canvas id="cv" aria-label="Interactive violin: hover or drag across the strings to play notes"></canvas>
+            <div class="hud px"><span>strings <span class="pips"
+                  id="pips"><i></i><i></i><i></i><i></i></span></span><button id="snd" aria-pressed="true">sound
+                on</button></div>
+            <div class="labs px" id="labs"></div>
+          </div>
+        </div>
+        <p class="hint">Each string represents a product phase: pluck all four to complete the lifecycle.</p>
+      </div>
+    </div>
 
-  <div class="cols">
-    <div><h3>O problema</h3><p>Campanhas políticas gerenciavam lideranças, votos e gastos com papel e planilhas. O Nix centraliza tudo em um app Android/iOS e na web.</p></div>
-    <div><h3>Meu papel</h3><p>Líder técnico de um time de 4 pessoas: eu, 1 dev de front e 2 de back, todos juniores. O dono do produto definiu funções e design. Eu defini stack, modelo de dados, segurança e LGPD e as integrações (Firebase, pagamentos, IA, mapas), desenvolvi parte do front e do back e fiz o deploy no Render, na Play Store e na App Store.</p></div>
-    <div><h3>Como conduzi o time</h3><p>Todo PR passava por mim antes do merge na branch de desenvolvimento. Tarefas dimensionadas por T-shirt sizing e distribuídas de forma equilibrada, com metas individuais. Sem orçamento para ferramentas, o acompanhamento foi feito em planilhas.</p></div>
-  </div>
+    <section id="cases">
+      <div class="wrap">
+        <h2>Cases</h2>
+        <p class="sub">Select a product to view the problem, my role, and the outcome.</p>
+        <div class="tabs" role="tablist" aria-label="Cases" id="tabs"></div>
+        <div id="case-nix" role="tabpanel" class="case-panel">
+          <h3 class="ct">Nix</h3>
+          <p class="sub">Electoral campaign management (SaaS on Android, iOS, and web).</p>
+          <ul class="tags">
+            <li>Play Store</li>
+            <li>App Store</li>
+            <li>Web</li>
+            <li>Payments APIs</li>
+          </ul>
 
-  <h3>Prazo: 1 mês no papel, 7 no calendário</h3>
-  <p style="max-width:62ch;margin:0 0 1.4rem">A diretoria fixou 1 mês antes de definir o escopo. Sinalizei que era inviável: 22 modelos, pagamentos, IA, mapas, web e duas lojas. O prazo foi mantido.</p>
-  <div class="tl" id="tl">
-    <div class="row r1"><span>Prazo da diretoria <em>1 mês</em></span><div class="track"><div class="bar" style="width:14.28%"><i style="width:100%"></i></div></div></div>
-    <div class="row r2"><span>Publicação nas lojas <em>3 a 4 meses</em></span><div class="track"><div class="bar" style="width:57.14%"><i style="width:75%"></i><i style="width:25%"></i></div></div></div>
-    <div class="row r3"><span>Atualização contínua <em>até o 7º mês</em></span><div class="track"><div class="bar" style="width:100%"><i style="width:100%"></i></div></div></div>
-    <div class="ticks" aria-hidden="true"><span>mês 1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span></div>
-  </div>
+          <div class="cols">
+            <div>
+              <h3>The Problem</h3>
+              <p>Political campaigns were managing grassroots leadership, votes, and campaign expenses using paper and
+                spreadsheets. Nix centralizes everything into an Android/iOS app and web platform, with
+                subscription-based billing.</p>
+            </div>
+            <div>
+              <h3>My Role</h3>
+              <p>Tech lead of a 4-person team: myself and 3 interns (1 frontend, 2 backend). The product owner defined
+                requirements and design.</p>
+            </div>
+          </div>
 
-  <h3>Decisões técnicas e o que cada uma custou</h3>
-  <p style="color:var(--mute);margin:0">Toque em um cartão para virar.</p>
-  <div class="deck" id="deck"></div>
+          <h3>Architecture & Decisions</h3>
+          <ul class="l" style="margin-bottom:2.4rem">
+            <li>Defined the stack, data model (22 models), security, compliance and data privacy (LGPD) for users and
+              registered voters, and third-party integrations (Firebase, payments, AI, maps).</li>
+            <li>Implementation and delivery: developed core parts of the frontend and backend, orchestrated deployments
+              to Render, Google Play Store, and Apple App Store.</li>
+            <li>Team leadership: every PR required my review before merging into development. Tasks were scoped using
+              T-shirt sizing and balanced across individual goals. Without budget for specialized tooling, sprint
+              tracking was maintained in spreadsheets.</li>
+            <li>Delivery timeline: executive management set an aggressive 1-month timeline prior to finalized scoping.
+              The sizing breakdown showed delivery would take longer, which I communicated upfront. At the end of month
+              one, I delivered the scoped features with full justification. Final polish and rollout extended through
+              month seven.</li>
+          </ul>
 
-  <div class="res">
-    <h3>Resultado</h3>
-    <p>Produto publicado em Android, iOS e web, com cobrança por assinatura em produção. Não ganhou tração comercial por limitações de distribuição, fora do escopo técnico.</p>
-    <p>Qualidade: cerca de 4 mil linhas de teste (pagamentos, IA e autenticação) e lint em CI no app.</p>
-  </div>
+          <h3>Technical Decisions</h3>
+          <div class="decs">
+            <div class="dec"><b>Logical multi-tenancy via root_user</b>
+              <p>A single database instance. The root entity (candidate) holds full permissions over child users (staff
+                and campaign leaders) and data within their scope. Every queryset is scoped to the candidate, and
+                cross-tenant requests return 404 rather than 403 to prevent ID enumeration.</p>
+              <p class="to">Cost: Isolation integrity depends strictly on proper queryset scoping across every endpoint.
+              </p>
+            </div>
+            <div class="dec"><b>Device concurrency limits per account</b>
+              <p>Each account is restricted to a maximum of one mobile and one desktop session. A subsequent login
+                terminates previous active sessions and triggers an alert email. The device_id is encoded in the JWT and
+                validated by the backend, preventing shared credential abuse.</p>
+            </div>
+            <div class="dec"><b>Daily AI cost ceiling per user</b>
+              <p>Google Gemini powers the campaign AI assistant. Consumption cost is computed per token and aggregated.
+                Gemini enforces hard monthly quotas, while Nix limits daily user consumption. Upon hitting the
+                threshold, users receive notices indicating cooldown periods or token recharge options.</p>
+            </div>
+            <div class="dec"><b>Subscription billing with Mercado Pago and webhooks</b>
+              <p>Checkout and billing occur via Mercado Pago. Webhook callbacks dispatch events to the API to update
+                subscription state. Access control authorization resides strictly on the backend.</p>
+            </div>
+            <div class="dec"><b>Universal codebase with Expo and React Native Web</b>
+              <p>Single shared business logic across Android, iOS, and web, making maintenance sustainable for a lean
+                engineering team.</p>
+            </div>
+            <div class="dec"><b>Axios token refresh queue</b>
+              <p>With concurrent HTTP requests and an expired access token, only the first request dispatches a refresh
+                while subsequent requests queue and reuse the newly minted token.</p>
+            </div>
+          </div>
 
-  <div class="cols">
-    <div><h3>O que aprendi</h3><ul class="l">
-      <li>Risco de prazo precisa ser registrado por escrito, com proposta de MVP e marcos.</li>
-      <li>Com um prazo realista, eu teria investido antes do deploy em segurança, CI/CD, contêineres e testes de interface.</li>
-      <li>Dimensionar tasks e revisar todo PR manteve a qualidade com time júnior, mas não escala sem CI automatizado. O próximo passo seria exigir testes no PR.</li></ul></div>
-    <div><h3>O que eu faria a seguir</h3><ul class="l">
-      <li>CI para os testes do backend.</li><li>Ambiente reproduzível com Docker.</li><li>Cobertura nos módulos sem testes.</li><li>Endurecimento da camada de dados pessoais conforme a LGPD.</li></ul></div>
-  </div>
-  <p class="stack">Django 6 / DRF, PostgreSQL, Celery + Redis, S3, Expo / React Native, TypeScript, Mercado Pago, Apple StoreKit, Google Maps.</p>
+          <div class="res">
+            <h3>Result</h3>
+            <p>Product launched on Android, iOS, and web with live recurring billing in production. Did not achieve
+              commercial scale due to go-to-market distribution limitations, outside technical scope.</p>
+          </div>
 
-  </div>
-  <div id="case-carnaval" role="tabpanel" hidden>
-  <h3 class="ct">CarnavalRio</h3>
-  <p class="sub">App de agenda, escolas de samba e votação popular do Carnaval carioca.</p>
-  <ul class="tags"><li>Android</li><li>iOS</li><li>500+ downloads na Play Store</li></ul>
+          <h3 style="margin-top:2.4rem">Stack</h3>
+          <ul class="l">
+            <li>App (iOS, Android, and web): Expo, React Native, React Native Web, TypeScript</li>
+            <li>Backend: Django 6, Django REST Framework, PostgreSQL, Celery, Redis</li>
+            <li>Integrations: Mercado Pago, Apple StoreKit, Google Gemini (campaign AI), Google Maps, Firebase (in-app
+              notifications across root tenant users)</li>
+            <li>Infrastructure: AWS S3, Render</li>
+          </ul>
+        </div>
 
-  <div class="cols">
-    <div><h3>O problema</h3><p>Quem queria se informar sobre o Carnaval carioca não tinha uma plataforma completa. O CarnavalRio reúne agenda, escolas de samba, enquetes de votação popular e o mapa do Sambódromo em um só app.</p></div>
-    <div><h3>Meu papel</h3><p>Tech lead e único desenvolvedor sênior da startup. Projetei a arquitetura do app e da API, e toda decisão técnica do projeto passou por mim. O time tinha 3 devs: eu e dois estagiários de back-end.</p><p style="margin-top:.7rem">App mobile: projeto e implementação completos (Expo/React Native, 24 telas).</p><p style="margin-top:.7rem">API: arquitetura completa; implementei os módulos de autenticação, votação e Celery. Os estagiários implementaram o restante sob minha direção.</p><p style="margin-top:.7rem">Migração: planejei a estratégia e delegava as tarefas; eu fechava cada uma (revisão de PR e configuração do deploy no Render).</p></div>
-  </div>
+        <div id="case-carnaval" role="tabpanel" hidden class="case-panel">
+          <h3 class="ct">CarnavalRio</h3>
+          <p class="sub">Schedule, samba schools, and public voting guide for Rio Carnival.</p>
+          <ul class="tags">
+            <li>Android</li>
+            <li>iOS</li>
+            <li>500+ downloads on Google Play</li>
+          </ul>
 
-  <h3>Decisões técnicas</h3>
-  <div class="decs">
-    <div class="dec"><b>Migração incremental com o app em produção</b><p>Primeiro migramos os dados para a nova API. Depois o app passou a apontar para os novos endpoints: quem atualizava ou instalava pela primeira vez já usava a API nova, e as novas funcionalidades chegaram em releases seguintes.</p><p class="to">Custo: manter versões antigas do app compatíveis por um tempo.</p></div>
-    <div class="dec"><b>Integridade do voto garantida pelo banco</b><p>Voto duplicado é impedido por constraint única no Postgres, e não por validação na aplicação. Isso vale mesmo sob requisições concorrentes. A votação em lote exige conta ativada, e o app trata a rejeição levando o usuário à ativação.</p></div>
-    <div class="dec"><b>Ranking em tempo real com Redis ZSET</b><p>O voto é gravado e confirmado no Postgres, que é a fonte da verdade; só depois o ZSET é atualizado. Se o Redis perder os dados, o ranking é reconstruído a partir do banco.</p><p class="to">Trade-off: uma janela curta de inconsistência entre o commit e a atualização do ranking.</p></div>
-    <div class="dec"><b>Cadastro com OTP sem criar usuário antes da validação</b><p>Os dados ficam no Redis com TTL e só viram usuário no banco depois de validados. Isso evita contas não verificadas e reduz dados pessoais persistidos.</p><p class="to">Custo: depender do Redis nesse fluxo. Se o dado expira, o usuário recomeça.</p></div>
-    <div class="dec"><b>Throttling em três camadas no OTP + tratamento centralizado de erros HTTP no app</b><p>O throttling protege contra abuso e custo de envio de códigos. No app, o erro 429 mostra o horário exato de desbloqueio (retry_after), e o 403 na votação em lote leva à ativação da conta.</p><p class="to">Trade-off: acoplar a camada de rede ao fluxo de navegação.</p></div>
-    <div class="dec"><b>Upload direto ao S3 com URL pré-assinada e normalização de imagens</b><p>O arquivo vai do app direto para o S3, sem passar pelo servidor, o que alivia o Django. As imagens são normalizadas depois como proteção contra decompression bomb.</p><p class="to">Trade-off: a validação acontece depois do upload.</p></div>
-    <div class="dec"><b>Fila de renovação de token no Axios</b><p>Com várias requisições paralelas e o token expirado, só uma chama o refresh e as outras aguardam. Isso evita invalidar o refresh token por reuso.</p><p class="to">Custo: lógica de interceptor sensível a condições de corrida, ainda sem teste automatizado.</p></div>
-    <div class="dec"><b>Tokens no SecureStore (Keychain/Keystore) em vez de AsyncStorage</b><p>As credenciais ficam no armazenamento protegido do sistema.</p><p class="to">Custo: a hidratação assíncrona na inicialização. O app resolve o estado da sessão antes de escolher a primeira tela.</p></div>
-    <div class="dec"><b>Expo Router e TanStack Query</b><p>Navegação baseada em arquivos e cache de dados remotos com revalidação. O estado local fica no Zustand.</p></div>
-  </div>
+          <div class="cols">
+            <div>
+              <h3>The Problem</h3>
+              <p>Anyone seeking Rio Carnival details lacked a centralized, reliable platform. CarnavalRio consolidates
+                schedules, samba school profiles, public voting polls, and Sambadrome venue maps into a unified mobile
+                application.</p>
+            </div>
+            <div>
+              <h3>My Role</h3>
+              <p>Tech lead and sole senior developer at the startup. Architected the mobile application and API, owning
+                all technical decisions. Team comprised 3 developers: myself and two backend interns.</p>
+              <p style="margin-top:.7rem">Mobile app: Complete design and implementation (Expo/React Native, 24
+                screens).</p>
+              <p style="margin-top:.7rem">API: Complete architecture; implemented authentication, voting engines, and
+                asynchronous Celery tasks. Mentored interns implementing endpoints.</p>
+              <p style="margin-top:.7rem">Migration: Planned strategy and task delegation, executing all final PR
+                reviews and Render deployment pipelines.</p>
+            </div>
+          </div>
 
-  <div class="res">
-    <h3>Resultado</h3>
-    <p>App publicado na Play Store e na App Store, com mais de 500 downloads na Play Store.</p>
-    <p>Qualidade: 271 testes automatizados no back-end, com CI rodando no back-end.</p>
-  </div>
+          <h3>Technical Decisions</h3>
+          <div class="decs">
+            <div class="dec"><b>Zero-downtime incremental migration in production</b>
+              <p>First migrated relational data to the new API architecture. The mobile app was then repointed to the
+                new endpoints: new installs and updates consumed the new API seamlessly, with subsequent features rolled
+                out in iterative updates.</p>
+              <p class="to">Cost: Required maintaining backward compatibility for legacy app versions temporarily.</p>
+            </div>
+            <div class="dec"><b>Database-enforced vote integrity</b>
+              <p>Duplicate votes are rejected via PostgreSQL unique constraints rather than application-layer checks,
+                guaranteeing integrity even under concurrent traffic spikes. Batch voting requires verified accounts,
+                automatically redirecting unverified users to account activation.</p>
+            </div>
+            <div class="dec"><b>Real-time leaderboard using Redis ZSET</b>
+              <p>Votes are committed to PostgreSQL as the persistent source of truth before updating the Redis ZSET
+                leaderboard. In the event of cache eviction, the ranking is deterministically rebuilt from database
+                transactions.</p>
+              <p class="to">Trade-off: Brief eventual consistency window between Postgres transaction commit and Redis
+                leaderboard update.</p>
+            </div>
+            <div class="dec"><b>OTP registration without persistent user creation prior to validation</b>
+              <p>Pending verification payloads reside in Redis with TTL and convert to PostgreSQL user records only upon
+                OTP verification. Eliminates orphan accounts and minimizes persisted personal data.</p>
+              <p class="to">Cost: Dependency on Redis availability for registration; expired sessions require restart.
+              </p>
+            </div>
+            <div class="dec"><b>Three-tier OTP throttling + centralized app HTTP error handling</b>
+              <p>Multi-level throttling mitigates brute-force abuse and SMS gateway costs. The app handles HTTP 429 by
+                displaying the exact unlock countdown (retry_after), while HTTP 403 on voting routes to account
+                activation.</p>
+              <p class="to">Trade-off: Tighter coupling between network interceptor layers and navigation state.</p>
+            </div>
+            <div class="dec"><b>Direct S3 uploads via presigned URLs and image normalization</b>
+              <p>Media uploads transfer directly from client to AWS S3, bypassing Django workers to conserve backend
+                resources. Uploaded assets undergo asynchronous normalization to defend against decompression bombs.</p>
+              <p class="to">Trade-off: Media validation occurs asynchronously post-upload.</p>
+            </div>
+            <div class="dec"><b>Axios token renewal queue</b>
+              <p>Under concurrent requests with an expired session token, an interceptor queue limits refresh execution
+                to a single dispatch while queuing parallel requests.</p>
+              <p class="to">Cost: Race-condition-sensitive interceptor logic, pending automated frontend tests.</p>
+            </div>
+            <div class="dec"><b>SecureStore credentials (Keychain / Keystore)</b>
+              <p>Authentication credentials reside in OS-level hardware-backed secure storage rather than plaintext
+                AsyncStorage.</p>
+              <p class="to">Cost: Asynchronous startup hydration; the app resolves session state before routing initial
+                screens.</p>
+            </div>
+            <div class="dec"><b>Expo Router and TanStack Query</b>
+              <p>File-based filesystem routing paired with declarative server cache revalidation. Client UI state is
+                managed in Zustand.</p>
+            </div>
+          </div>
 
-  <h3 style="margin-top:2.4rem">Stack</h3>
-  <ul class="l">
-    <li>App mobile: Expo SDK 57, React Native, TypeScript, Expo Router, TanStack Query, Zustand, Axios</li>
-    <li>Back-end: Django 6, Django REST Framework, PostgreSQL, Celery, Redis</li>
-    <li>Infra e serviços: AWS S3, Render, Google Maps, GitHub Actions</li>
-  </ul>
-  </div>
-  <div id="case-click" role="tabpanel" hidden style="--dc:var(--case-click)">
-  <h3 class="ct">ClickCidadão</h3>
-  <p class="sub">App de serviços municipais, transporte e comércio local.</p>
-  <ul class="tags"><li>App Store</li><li>Play Store</li><li>Em processo de licitação</li></ul>
+          <div class="res">
+            <h3>Result</h3>
+            <p>Published on Google Play Store and Apple App Store, with 500+ downloads on Google Play.</p>
+            <p>Quality: 271 automated backend tests with continuous integration running on every push.</p>
+          </div>
 
-  <div class="cols">
-    <div><h3>O problema</h3><p>Cidadãos têm dificuldade para encontrar informações do próprio município e para registrar reclamações no órgão certo. O ClickCidadão reúne serviços, transporte e comércio local em um só app e envia as demandas por e-mail diretamente às secretarias e à prefeitura responsável.</p></div>
-    <div><h3>Meu papel</h3><p>Tech lead e único desenvolvedor sênior da startup. Toda decisão de arquitetura, stack e implementação passou por mim, e dois estagiários de back-end atuaram na execução sob minha direção.</p><p style="margin-top:.7rem">Front-end: ~90% do código (React Native/Expo) e 100% desde mai/2026, quando o outro dev de front saiu por término de contrato.</p><p style="margin-top:.7rem">Back-end (Django/DRF): projeto, revisão e parte da implementação.</p></div>
-  </div>
+          <h3 style="margin-top:2.4rem">Stack</h3>
+          <ul class="l">
+            <li>Mobile App: Expo SDK 57, React Native, TypeScript, Expo Router, TanStack Query, Zustand, Axios</li>
+            <li>Backend: Django 6, Django REST Framework, PostgreSQL, Celery, Redis</li>
+            <li>Infra & Services: AWS S3, Render, Google Maps, GitHub Actions</li>
+          </ul>
+        </div>
 
-  <h3>Decisões técnicas</h3>
-  <div class="decs">
-    <div class="dec"><b>Upload para S3 fora da transação do banco</b><p>O upload acontece antes do commit para não manter conexões do Postgres abertas durante transferências lentas. Se algo falha, o arquivo é removido manualmente.</p><p class="to">Trade-off: perde-se atomicidade. Um crash entre o upload e o commit pode deixar arquivos órfãos. Um job periódico no Celery faz a limpeza desses arquivos.</p></div>
-    <div class="dec"><b>Cache em duas camadas para respostas de IA</b><p>Memória + armazenamento local, TTL de 15 min. A chave de cache é por usuário, o que reduz o gasto com IA e limita perguntas repetidas. Consultas que levam de 10 a 60 s passam a responder instantaneamente quando repetidas.</p><p class="to">Trade-off: o cache vive no dispositivo. Não é compartilhado entre usuários e pode servir dado defasado por até 15 min.</p></div>
-    <div class="dec"><b>Assistente de ônibus via proxy no backend</b><p>A chave do serviço de IA nunca chega ao app, e o usuário autenticado é injetado no servidor. Isso centraliza o controle de acesso e de uso.</p><p class="to">Trade-off: um ponto de falha a mais e a dependência do backend em chamadas longas.</p></div>
-    <div class="dec"><b>Renovação concorrente de token no Axios, com fila</b><p>Telas com várias requisições paralelas derrubavam a sessão quando o token expirava. A fila garante um único refresh por vez, e as demais requisições aguardam e reaproveitam o novo token.</p><p class="to">Trade-off: uma lógica de interceptor sensível a condições de corrida, ainda sem testes automatizados no front.</p></div>
-    <div class="dec"><b>Tokens no SecureStore (Keychain/Keystore)</b><p>As credenciais ficam no armazenamento protegido do sistema operacional, em vez de storage comum.</p></div>
-    <div class="dec"><b>E-mail como canal de envio e trilha de auditoria</b><p>A reclamação sai pelo SMTP da própria empresa, com cópia para o cidadão e CCO para o e-mail administrativo. Isso dá comprovante ao usuário e registro para a empresa, sem manter um banco com o conteúdo das reclamações.</p><p class="to">Trade-off: não há métricas estruturadas. Toda análise depende de ler e-mails.</p></div>
-  </div>
+        <div id="case-click" role="tabpanel" hidden class="case-panel">
+          <h3 class="ct">ClickCidadão</h3>
+          <p class="sub">Municipal services, public transit, and local business discovery platform.</p>
+          <ul class="tags">
+            <li>App Store</li>
+            <li>Play Store</li>
+            <li>Public procurement bidding in progress</li>
+          </ul>
 
-  <div class="res">
-    <h3>Resultado</h3>
-    <p>App publicado na App Store e na Play Store, funcionando em iOS e Android, e oferecido a prefeituras por licitação (modelo de fornecedor, sem limite de municípios). O app ainda não tem usuários reais nem métricas de uso.</p>
-    <p>Qualidade: 293 testes automatizados que validam o funcionamento dos endpoints do back-end. No front, lint e checagem de tipos. O CI/CD roda no GitHub Actions, e as correções de front são publicadas via OTA com EAS.</p>
-  </div>
+          <div class="cols">
+            <div>
+              <h3>The Problem</h3>
+              <p>Citizens face friction accessing municipal service information and filing civil complaints to correct
+                administrative departments. ClickCidadão consolidates services, public transit routes, and local
+                commerce into a single app, dispatching demands directly via email to relevant municipal secretariats.
+              </p>
+            </div>
+            <div>
+              <h3>My Role</h3>
+              <p>Tech lead and sole senior developer at the startup. Architected the entire system, technology stack,
+                and implementation workflows, directing two backend interns.</p>
+              <p style="margin-top:.7rem">Frontend: ~90% of the codebase (React Native/Expo) and 100% since May 2026
+                following previous contract completion.</p>
+              <p style="margin-top:.7rem">Backend (Django/DRF): Architecture design, PR reviews, and core service
+                implementation.</p>
+            </div>
+          </div>
 
-  <h3 style="margin-top:2.4rem">Stack</h3>
-  <ul class="l">
-    <li>Front-end: React Native 0.83, Expo SDK 55, Expo Router, TypeScript, Axios</li>
-    <li>Back-end: Django 6, Django REST Framework, PostgreSQL 16, Celery, Redis</li>
-    <li>Infra e serviços: AWS S3, Render, Google Maps, Resend, GitHub Actions, EAS (build e OTA)</li>
-  </ul>
-  </div>
-  <div id="case-other" role="tabpanel" hidden></div>
-</div></section>
+          <h3>Technical Decisions</h3>
+          <div class="decs">
+            <div class="dec"><b>S3 upload detached from database transaction</b>
+              <p>File transfers execute prior to database transaction commits, preventing PostgreSQL connections from
+                lingering during slow network uploads. Failed transactions trigger cleanup hooks.</p>
+              <p class="to">Trade-off: Atomicity trade-off; uncommitted files require Celery garbage collection jobs.
+              </p>
+            </div>
+            <div class="dec"><b>Two-tier cache for AI inference queries</b>
+              <p>In-memory + local device storage with a 15-minute TTL keyed per user. Reduces third-party LLM API
+                expenditure and caps repeated queries. Drops response latency from 10–60s down to instantaneous on
+                repeats.</p>
+              <p class="to">Trade-off: Cache resides on-device; cannot be shared across devices and may serve data up to
+                15m old.</p>
+            </div>
+            <div class="dec"><b>Transit AI assistant proxied via backend</b>
+              <p>API keys never expose to the client; authenticated user identity injects at the server level for
+                auditing and rate-limiting.</p>
+              <p class="to">Trade-off: Additional network hop and backend resource consumption on streaming responses.
+              </p>
+            </div>
+            <div class="dec"><b>Concurrent token refresh queue with Axios</b>
+              <p>Screens issuing parallel HTTP queries prevent session drops on token expiration. The queue ensures a
+                single refresh call while pending requests wait and adopt the new bearer token.</p>
+              <p class="to">Trade-off: Complex interceptor state logic, pending automated frontend tests.</p>
+            </div>
+            <div class="dec"><b>SecureStore token persistence (Keychain / Keystore)</b>
+              <p>Tokens are saved directly to hardware-backed secure storage rather than standard AsyncStorage.</p>
+            </div>
+            <div class="dec"><b>Auditable transactional email dispatch</b>
+              <p>Complaints route through internal SMTP servers with citizen CC and administrative audit BCC, providing
+                delivery proofs without persisting complaint text in an internal database.</p>
+              <p class="to">Trade-off: Absence of structured analytics database; query analysis relies on mail logs.</p>
+            </div>
+          </div>
 
+          <div class="res">
+            <h3>Result</h3>
+            <p>Published on App Store and Google Play Store for iOS and Android, currently offered to municipal
+              governments under public bidding procurement. App has zero active consumer production users.</p>
+            <p>Quality: 293 automated tests validating backend API endpoints. Frontend enforces strict TypeScript type
+              safety and linting. CI/CD runs on GitHub Actions, with frontend OTA hotfixes delivered via EAS.</p>
+          </div>
 
-<section id="contato" class="contact"><div class="wrap">
-  <h2>Tem um produto para tirar do papel?</h2>
-  <p class="sub">Me conte o problema. Respondo com um caminho até o deploy.</p>
-  <div class="links">
-    <a class="btn" href="https://wa.me/5521998837786" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>Chamar no WhatsApp</a>
-    <a class="btn alt" href="https://linkedin.com/in/melosamuel" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>LinkedIn</a>
-    <a class="btn alt" href="https://github.com/Novo-Codigo" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</a>
-    <a class="btn alt" href="https://instagram.com/novo.codigo" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>Instagram</a>
-  </div>
-</div></section>
-</main>
-<footer><div class="wrap">© 2026 Samuel Melo, Novo Código.</div></footer>
-<div id="toast" role="status" aria-live="polite"></div>
+          <h3 style="margin-top:2.4rem">Stack</h3>
+          <ul class="l">
+            <li>Frontend: React Native 0.83, Expo SDK 55, Expo Router, TypeScript, Axios</li>
+            <li>Backend: Django 6, Django REST Framework, PostgreSQL 16, Celery, Redis</li>
+            <li>Infra & Services: AWS S3, Render, Google Maps, Resend, GitHub Actions, EAS (build and OTA)</li>
+          </ul>
+        </div>
 
-<script>
-const $=s=>document.querySelector(s),RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
-/* ---- violino ---- */
-const cv=$('#cv'),cx=cv.getContext('2d'),stage=$('#stage');
-const F=[196,293.66,440,659.25],ST=[['Modelo','sol'],['API','ré'],['App','lá'],['Deploy','mi']];
-const S=F.map(()=>({a:0,p:0,prev:null,t:0}));
-const TOP=.07,BOT=.88,TX=[.36,.45,.55,.64],BX=[.14,.38,.62,.86];
-let W,H,col={},got=new Set(),muted=false,ac,vis=true;
-const lerp=(a,b,t)=>a+(b-a)*t,xAt=(i,y)=>lerp(TX[i],BX[i],(y/H-TOP)/(BOT-TOP))*W;
-function cols(){const s=getComputedStyle(document.documentElement);['ink','mute','line','panel','brass','mint'].forEach(k=>col[k]=s.getPropertyValue('--'+k).trim())}
-function size(){const d=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*d;cv.height=H*d;cx.setTransform(d,0,0,d,0,0)}
-$('#labs').innerHTML=ST.map((s,i)=>`<button style="left:${BX[i]*100}%" data-i="${i}" aria-label="Tocar corda ${s[1]}: ${s[0]}">${s[0]}<small>${s[1]}</small></button>`).join('');
-$('#labs').onclick=e=>{const b=e.target.closest('button');if(b)pluck(+b.dataset.i,.9)};
-function note(f,v){if(muted)return;ac=ac||new(window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume();
- const t=ac.currentTime,g=ac.createGain(),lp=ac.createBiquadFilter(),o=ac.createOscillator(),o2=ac.createOscillator();
- o.type='sawtooth';o2.type='triangle';o.frequency.value=f;o2.frequency.value=f*1.004;lp.type='lowpass';
- lp.frequency.setValueAtTime(3400,t);lp.frequency.exponentialRampToValueAtTime(500,t+1);
- g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16*v,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+1.7);
- o.connect(lp);o2.connect(lp);lp.connect(g);g.connect(ac.destination);o.start(t);o2.start(t);o.stop(t+1.8);o2.stop(t+1.8)}
-function pluck(i,v,quiet){const s=S[i];s.a=Math.max(s.a,Math.min(1,v));if(quiet)return;note(F[i],v);got.add(i);
- document.querySelectorAll('#pips i')[i].classList.add('on');$('#labs').children[i].classList.add('got');
- if(got.size===4&&!pluck.done){pluck.done=1;toast('Conquista desbloqueada: full-cycle','Modelo, API, app e deploy. Do zero ao deploy.')}}
-function toast(a,b){const t=$('#toast');t.innerHTML=`<b>${a}</b>${b}`;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4800)}
-cv.addEventListener('pointermove',e=>{const x=e.offsetX,y=e.offsetY;if(y<TOP*H||y>BOT*H){S.forEach(s=>s.prev=null);return}
- S.forEach((s,i)=>{const d=x-xAt(i,y),n=performance.now();if(s.prev!==null&&s.prev*d<0&&n-s.t>140){s.t=n;pluck(i,.5+Math.min(.5,Math.abs(e.movementX||8)/40))}s.prev=d})});
-cv.addEventListener('pointerleave',()=>S.forEach(s=>s.prev=null));
-cv.addEventListener('pointerdown',e=>{let b=0,m=1e9;S.forEach((s,i)=>{const d=Math.abs(e.offsetX-xAt(i,e.offsetY));if(d<m){m=d;b=i}});if(m<36)pluck(b,1)});
-$('#snd').onclick=e=>{muted=!muted;e.target.textContent=muted?'som off':'som on';e.target.setAttribute('aria-pressed',!muted)};
-function draw(dt){cx.clearRect(0,0,W,H);const yT=TOP*H,yB=BOT*H,L0=TX[0]*W-26,R0=TX[3]*W+26,L1=BX[0]*W-44,R1=BX[3]*W+44;
- cx.fillStyle=col.panel;cx.beginPath();cx.moveTo(L0,yT);cx.lineTo(R0,yT);cx.lineTo(R1,yB);cx.lineTo(L1,yB);cx.fill();
- cx.strokeStyle=col.line;cx.lineWidth=1;
- for(let k=1;k<7;k++){const t=Math.pow(k/7,1.7);cx.beginPath();cx.moveTo(lerp(L0,L1,t),lerp(yT,yB,t));cx.lineTo(lerp(R0,R1,t),lerp(yT,yB,t));cx.stroke()}
- cx.strokeStyle=col.mute;cx.lineWidth=5;cx.beginPath();cx.moveTo(L0,yT);cx.lineTo(R0,yT);cx.stroke();
- cx.strokeStyle=col.ink;cx.lineWidth=7;cx.beginPath();cx.moveTo(L1-8,yB);cx.lineTo(R1+8,yB);cx.stroke();
- S.forEach((s,i)=>{s.p+=dt*(15+i*5);s.a*=Math.pow(.16,dt);if(s.a<.003)s.a=0;
-  cx.strokeStyle=i===3?col.brass:col.ink;cx.lineWidth=[3.6,3,2.3,1.7][i];cx.lineCap='round';
-  cx.shadowColor=col.mint;cx.shadowBlur=s.a>.05?14*s.a:0;cx.beginPath();
-  for(let k=0;k<=28;k++){const u=k/28,y=lerp(yT,yB,u),x=xAt(i,y)+s.a*40*Math.sin(Math.PI*u)*Math.cos(s.p)*(.4+.6*u);k?cx.lineTo(x,y):cx.moveTo(x,y)}
-  cx.stroke();cx.shadowBlur=0})}
-let last=0;function loop(n){const dt=Math.min(.05,(n-last)/1000||0);last=n;if(vis)draw(dt);requestAnimationFrame(loop)}
-cols();size();addEventListener('resize',size);
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change',cols);
-new IntersectionObserver(e=>vis=e[0].isIntersecting).observe(stage);
-requestAnimationFrame(loop);
-if(!RM)[0,1,2,3].forEach(i=>setTimeout(()=>pluck(i,.55,true),500+i*320));
-/* ---- pads ---- */
-const PF=[392,523.25,659.25,783.99];
-document.querySelectorAll('.pad').forEach((b,i)=>b.addEventListener('click',()=>{note(PF[i],.9);b.classList.remove('hit');void b.offsetWidth;b.classList.add('hit')}));
-/* ---- cases ---- */
-const C=[{id:'nix',n:'Nix',d:'Gestão de campanhas eleitorais em Android, iOS e web, com assinatura em produção.'},
-{id:'click',n:'ClickCidadão',d:'App de serviços municipais, transporte e comércio local, publicado na App Store e na Play Store.'},
-{id:'carnaval',n:'CarnavalRio',d:'Agenda, escolas de samba e votação popular do Carnaval carioca, em Android e iOS.'}];
-$('#tabs').innerHTML=C.map(c=>`<button class="tab" role="tab" data-k="${c.id}" aria-selected="false" aria-controls="${c.id==='nix'?'case-nix':c.id==='carnaval'?'case-carnaval':c.id==='click'?'case-click':'case-other'}"><span class="logo-slot tab-logo" aria-label="Espaço para o logo de ${c.n}">${c.logo?`<img src="${c.logo}" alt="Logo ${c.n}">`:'logo'}</span><b>${c.n}</b><span>${c.d}</span></button>`).join('');
-function show(k){document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.k===k));
- const o=$('#case-other'),P={nix:'#case-nix',carnaval:'#case-carnaval',click:'#case-click'};['#case-nix','#case-carnaval','#case-click','#case-other'].forEach(s=>$(s).hidden=s!==(P[k]||'#case-other'));
- if(!P[k]){const c=C.find(x=>x.id===k);o.innerHTML=`<h3 class="ct">${c.n}</h3><p class="sub">${c.d}</p><div class="res"><h3>Quer o case completo?</h3><p>Mostro o problema, as decisões técnicas e o resultado de ${c.n} numa conversa rápida.</p><a class="btn" href="https://wa.me/5521998837786?text=${encodeURIComponent('Oi Samuel, quero ver o case '+c.n)}" target="_blank" rel="noopener">Pedir o case de ${c.n}</a></div>`}}
-$('#tabs').onclick=e=>{const t=e.target.closest('.tab');if(t)show(t.dataset.k)};
-show('nix');
-/* ---- case Nix ---- */
-const D=[
-['Multi-tenant lógico por root_user','Um banco só, com escopo por candidato em cada queryset. Respondo 404 em vez de 403 para ninguém enumerar IDs.','O isolamento depende de cada queryset estar escopado.'],
-['Sessão única por dispositivo','O device_id vai no JWT e o servidor confere. Ninguém divide uma conta paga.','Incomoda quem alterna entre celular e desktop.'],
-['Fila de refresh de token','Com várias requisições paralelas e o token vencido, só uma chama o refresh.','Coordenação extra no cliente.'],
-['Código universal','Expo e React Native Web: uma regra de negócio para as três plataformas.','Bifurcações para as APIs nativas.'],
-['Teto diário de custo de IA','Cada chamada ao Gemini é somada em reais, e cada usuário tem um limite por dia.','Toda chamada precisa passar pela contabilidade.']];
-$('#deck').innerHTML=D.map(d=>`<button class="card" aria-pressed="false"><span class="face"><b>${d[0]}</b>${d[1]}<span class="px">ver o custo</span></span><span class="face back"><b>O que custou</b>${d[2]}<span class="px">voltar</span></span></button>`).join('');
-$('#deck').onclick=e=>{const c=e.target.closest('.card');if(c)c.setAttribute('aria-pressed',c.getAttribute('aria-pressed')!=='true')};
-new IntersectionObserver((e,o)=>{if(e[0].isIntersecting){$('#tl').classList.add('in');o.disconnect()}},{threshold:.4}).observe($('#tl'));
-</script>
+        <div id="case-other" role="tabpanel" hidden class="case-panel"></div>
+      </div>
+    </section>
+
+    <section id="contato" class="contact">
+      <div class="wrap">
+        <h2>Have a product to build?</h2>
+        <p class="sub">Describe the problem. I respond with a direct path to production deployment.</p>
+        <div class="links">
+          <a class="btn" href="https://wa.me/5521998837786" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"
+              fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              aria-hidden="true">
+              <path
+                d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+            </svg>Contact via WhatsApp</a>
+          <a class="btn alt" href="https://linkedin.com/in/melosamuel" target="_blank" rel="noopener"><svg
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+              <rect x="2" y="9" width="4" height="12" />
+              <circle cx="4" cy="4" r="2" />
+            </svg>LinkedIn</a>
+          <a class="btn alt" href="https://github.com/Novo-Codigo" target="_blank" rel="noopener"><svg
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+            </svg>GitHub</a>
+          <a class="btn alt" href="https://instagram.com/novo.codigo" target="_blank" rel="noopener"><svg
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="4" />
+              <path d="M17.5 6.5h.01" />
+            </svg>Instagram</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap">© 2026 Samuel Melo, Novo Código.</div>
+  </footer>
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script src="core.js" defer></script>
 </body>
+
 </html>
