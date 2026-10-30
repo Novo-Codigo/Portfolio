@@ -1,212 +1,100 @@
-const $ = s => document.querySelector(s), RM = matchMedia('(prefers-reduced-motion:reduce)').matches;
+const $ = s => document.querySelector(s);
+const RM = matchMedia('(prefers-reduced-motion:reduce)').matches;
 
-/* ---- violin ---- */
-const cv = $('#cv'), cx = cv.getContext('2d'), stage = $('#stage');
-const F = [196, 293.66, 440, 659.25], ST = [['Model', 'G'], ['API', 'D'], ['App', 'A'], ['Deploy', 'E']];
-const S = F.map(() => ({ a: 0, p: 0, prev: null, t: 0 }));
-const TOP = .07, BOT = .88, TX = [.36, .45, .55, .64], BX = [.14, .38, .62, .86];
-let W, H, col = {}, got = new Set(), muted = false, ac, vis = true;
-const lerp = (a, b, t) => a + (b - a) * t, xAt = (i, y) => lerp(TX[i], BX[i], (y / H - TOP) / (BOT - TOP)) * W;
+/* ---- ribbon: stack names, duplicated for a seamless loop ---- */
+const STACK = ['Python', 'Django', 'FastAPI', 'Flutter', 'React Native', 'Expo', 'TypeScript', 'Next.js', 'PostgreSQL', 'Redis', 'Celery', 'AWS', 'GitHub Actions', 'Playwright'];
+const run = STACK.map(x => `<span>${x}</span><i></i>`).join('');
+$('#track').innerHTML = run + run;
 
-function cols() {
-  const s = getComputedStyle(document.documentElement);
-  ['ink', 'mute', 'line', 'panel', 'brass', 'mint'].forEach(k => col[k] = s.getPropertyValue('--' + k).trim());
+/* ---- hero: stickers drift with the pointer (fine pointers only) ---- */
+const stickers = document.querySelectorAll('#art [data-d]');
+if (!RM && matchMedia('(pointer:fine)').matches) {
+  addEventListener('pointermove', e => {
+    const x = e.clientX / innerWidth - .5, y = e.clientY / innerHeight - .5;
+    stickers.forEach(s => s.style.translate = `${x * s.dataset.d}px ${y * s.dataset.d}px`);
+  }, { passive: true });
 }
-
-function size() {
-  const d = Math.min(devicePixelRatio || 1, 2);
-  W = cv.clientWidth;
-  H = cv.clientHeight;
-  cv.width = W * d;
-  cv.height = H * d;
-  cx.setTransform(d, 0, 0, d, 0, 0);
-}
-
-$('#labs').innerHTML = ST.map((s, i) => `<button style="left:${BX[i] * 100}%" data-i="${i}" aria-label="Play string ${s[1]}: ${s[0]}">${s[0]}<small>${s[1]}</small></button>`).join('');
-$('#labs').onclick = e => {
-  const b = e.target.closest('button');
-  if (b) pluck(+b.dataset.i, .9);
-};
-
-function note(f, v) {
-  if (muted) return;
-  ac = ac || new (window.AudioContext || window.webkitAudioContext)();
-  if (ac.state === 'suspended') ac.resume();
-  const t = ac.currentTime, g = ac.createGain(), lp = ac.createBiquadFilter(), o = ac.createOscillator(), o2 = ac.createOscillator();
-  o.type = 'sawtooth';
-  o2.type = 'triangle';
-  o.frequency.value = f;
-  o2.frequency.value = f * 1.004;
-  lp.type = 'lowpass';
-  lp.frequency.setValueAtTime(3400, t);
-  lp.frequency.exponentialRampToValueAtTime(500, t + 1);
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(.16 * v, t + .006);
-  g.gain.exponentialRampToValueAtTime(.0001, t + 1.7);
-  o.connect(lp);
-  o2.connect(lp);
-  lp.connect(g);
-  g.connect(ac.destination);
-  o.start(t);
-  o2.start(t);
-  o.stop(t + 1.8);
-  o2.stop(t + 1.8);
-}
-
-function pluck(i, v, quiet) {
-  const s = S[i];
-  s.a = Math.max(s.a, Math.min(1, v));
-  if (quiet) return;
-  note(F[i], v);
-  got.add(i);
-  document.querySelectorAll('#pips i')[i].classList.add('on');
-  $('#labs').children[i].classList.add('got');
-  if (got.size === 4 && !pluck.done) {
-    pluck.done = 1;
-    toast('Achievement unlocked: full-cycle', 'Model, API, app, and deploy. From zero to deploy.');
-  }
-}
-
-function toast(a, b) {
-  const t = $('#toast');
-  t.innerHTML = `<b>${a}</b>${b}`;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 4800);
-}
-
-cv.addEventListener('pointermove', e => {
-  const x = e.offsetX, y = e.offsetY;
-  if (y < TOP * H || y > BOT * H) {
-    S.forEach(s => s.prev = null);
-    return;
-  }
-  S.forEach((s, i) => {
-    const d = x - xAt(i, y), n = performance.now();
-    if (s.prev !== null && s.prev * d < 0 && n - s.t > 140) {
-      s.t = n;
-      pluck(i, .5 + Math.min(.5, Math.abs(e.movementX || 8) / 40));
-    }
-    s.prev = d;
-  });
-});
-
-cv.addEventListener('pointerleave', () => S.forEach(s => s.prev = null));
-cv.addEventListener('pointerdown', e => {
-  let b = 0, m = 1e9;
-  S.forEach((s, i) => {
-    const d = Math.abs(e.offsetX - xAt(i, e.offsetY));
-    if (d < m) {
-      m = d;
-      b = i;
-    }
-  });
-  if (m < 36) pluck(b, 1);
-});
-
-$('#snd').onclick = e => {
-  muted = !muted;
-  e.target.textContent = muted ? 'sound off' : 'sound on';
-  e.target.setAttribute('aria-pressed', !muted);
-};
-
-function draw(dt) {
-  cx.clearRect(0, 0, W, H);
-  const yT = TOP * H, yB = BOT * H, L0 = TX[0] * W - 26, R0 = TX[3] * W + 26, L1 = BX[0] * W - 44, R1 = BX[3] * W + 44;
-  cx.fillStyle = col.panel;
-  cx.beginPath();
-  cx.moveTo(L0, yT);
-  cx.lineTo(R0, yT);
-  cx.lineTo(R1, yB);
-  cx.lineTo(L1, yB);
-  cx.fill();
-  cx.strokeStyle = col.line;
-  cx.lineWidth = 1;
-  for (let k = 1; k < 7; k++) {
-    const t = Math.pow(k / 7, 1.7);
-    cx.beginPath();
-    cx.moveTo(lerp(L0, L1, t), lerp(yT, yB, t));
-    cx.lineTo(lerp(R0, R1, t), lerp(yT, yB, t));
-    cx.stroke();
-  }
-  cx.strokeStyle = col.mute;
-  cx.lineWidth = 5;
-  cx.beginPath();
-  cx.moveTo(L0, yT);
-  cx.lineTo(R0, yT);
-  cx.stroke();
-  cx.strokeStyle = col.ink;
-  cx.lineWidth = 7;
-  cx.beginPath();
-  cx.moveTo(L1 - 8, yB);
-  cx.lineTo(R1 + 8, yB);
-  cx.stroke();
-  S.forEach((s, i) => {
-    s.p += dt * (15 + i * 5);
-    s.a *= Math.pow(.16, dt);
-    if (s.a < .003) s.a = 0;
-    cx.strokeStyle = i === 3 ? col.brass : col.ink;
-    cx.lineWidth = [3.6, 3, 2.3, 1.7][i];
-    cx.lineCap = 'round';
-    cx.shadowColor = col.mint;
-    cx.shadowBlur = s.a > .05 ? 14 * s.a : 0;
-    cx.beginPath();
-    for (let k = 0; k <= 28; k++) {
-      const u = k / 28, y = lerp(yT, yB, u), x = xAt(i, y) + s.a * 40 * Math.sin(Math.PI * u) * Math.cos(s.p) * (.4 + .6 * u);
-      k ? cx.lineTo(x, y) : cx.moveTo(x, y);
-    }
-    cx.stroke();
-    cx.shadowBlur = 0;
-  });
-}
-
-let last = 0;
-function loop(n) {
-  const dt = Math.min(.05, (n - last) / 1000 || 0);
-  last = n;
-  if (vis) draw(dt);
-  requestAnimationFrame(loop);
-}
-
-cols();
-size();
-addEventListener('resize', size);
-matchMedia('(prefers-color-scheme:dark)').addEventListener('change', cols);
-new IntersectionObserver(e => vis = e[0].isIntersecting).observe(stage);
-requestAnimationFrame(loop);
-
-if (!RM) [0, 1, 2, 3].forEach(i => setTimeout(() => pluck(i, .55, true), 500 + i * 320));
-
-/* ---- pads ---- */
-const PF = [392, 523.25, 659.25, 783.99];
-document.querySelectorAll('.pad').forEach((b, i) => b.addEventListener('click', () => {
-  note(PF[i], .9);
-  b.classList.remove('hit');
-  void b.offsetWidth;
-  b.classList.add('hit');
-}));
 
 /* ---- cases ---- */
 const C = [
-  { id: 'nix', n: 'Nix', d: 'Electoral campaign management on Android, iOS, and web, with live production subscriptions.' },
-  { id: 'click', n: 'ClickCidadão', d: 'Municipal services, public transit, and local business app, published on App Store and Google Play.' },
-  { id: 'carnaval', n: 'CarnavalRio', d: 'Schedule, samba schools, and public voting guide for Rio Carnival, on Android and iOS.' }
+  {
+    id: 'nix',
+    n: 'Nix',
+    line: 'Campaign management SaaS for political campaigns, on Android, iOS and web.',
+    tags: ['Play Store', 'App Store', 'Web', 'Recurring billing'],
+    problem: 'Campaigns tracked grassroots leaders, votes and expenses on paper and spreadsheets. Nix puts them in one app and web platform with subscription billing.',
+    role: 'Tech lead of a four-person team (three interns), with a product owner defining requirements and design. I defined the stack, the 22-model data model, LGPD compliance and the integrations. I reviewed every PR and delivered core frontend and backend parts and all deployments.',
+    dec: [
+      ['Logical multi-tenancy', 'One database. Every queryset is scoped to the candidate, and cross-tenant requests return 404 instead of 403 to block ID enumeration.', 'Cost: isolation depends on scoping every endpoint.'],
+      ['One session per device type', 'Each account allows one mobile and one desktop session. A new login ends the old one and sends an alert email. The device_id is in the JWT and validated by the backend.'],
+      ['Daily AI cost cap per user', 'Gemini usage is metered per token, with a daily limit per user on top of Gemini’s monthly quota. Users see a cooldown or recharge notice at the limit.'],
+      ['Billing with Mercado Pago webhooks', 'Webhooks update subscription state. Access control lives only on the backend.']
+    ],
+    result: 'Launched on Android, iOS and web with live recurring billing. It did not reach commercial scale because of go-to-market limits outside the technical scope.',
+    stack: ['App: Expo, React Native, React Native Web, TypeScript', 'Backend: Django, Django REST Framework, PostgreSQL, Celery, Redis', 'Integrations: Mercado Pago, Apple StoreKit, Google Gemini, Google Maps, Firebase', 'Infra: AWS S3, Render']
+  },
+  {
+    id: 'carnaval',
+    n: 'CarnavalRio',
+    line: 'Schedule, samba schools and public voting guide for Rio Carnival.',
+    tags: ['Android', 'iOS', '500+ downloads on Google Play'],
+    problem: 'Carnival fans had no single reliable source. The app brings schedules, samba school profiles, public polls and Sambadrome maps together.',
+    role: 'Tech lead and sole senior developer on a three-person team with two backend interns. I designed and built the mobile app (Expo, 24 screens), architected the API and implemented authentication, voting and Celery tasks. I mentored the interns and ran final PR reviews and deploys.',
+    dec: [
+      ['Zero-downtime migration', 'Relational data moved to the new API first, then the app was repointed. Legacy app versions kept working in the meantime.', 'Cost: temporary backward compatibility.'],
+      ['Vote integrity in the database', 'PostgreSQL unique constraints reject duplicate votes, even under concurrent traffic spikes.'],
+      ['Redis ZSET leaderboard', 'Votes commit to PostgreSQL first, then update Redis. After a cache eviction, the ranking is rebuilt from the database.', 'Trade-off: a brief eventual-consistency window.'],
+      ['OTP signup without early user creation', 'Pending signups live in Redis with a TTL and become users only after OTP verification, so no orphan accounts are left behind.', 'Cost: registration depends on Redis.']
+    ],
+    result: 'Live on Google Play and the App Store, with 500+ downloads on Google Play. The backend has 271 automated tests, run by CI on every push.',
+    stack: ['App: Expo, React Native, TypeScript, Expo Router, TanStack Query, Zustand, Axios', 'Backend: Django, Django REST Framework, PostgreSQL, Celery, Redis', 'Infra: AWS S3, Render, Google Maps, GitHub Actions']
+  },
+  {
+    id: 'click',
+    n: 'ClickCidadão',
+    line: 'Municipal services, public transit and local business discovery.',
+    tags: ['App Store', 'Play Store', 'In public procurement'],
+    problem: 'Citizens struggle to find municipal services and to file complaints with the right department. The app brings services, transit routes and local commerce together and emails each complaint to the responsible secretariat.',
+    role: 'Tech lead and sole senior developer, directing two backend interns. I architected the system and the stack. I wrote about 90% of the React Native frontend, and all of it since May 2026, and I designed the Django backend, reviewed its PRs and built core services.',
+    dec: [
+      ['Two-tier cache for AI queries', 'Memory plus device storage with a 15-minute TTL per user cuts LLM API spend. Repeat queries return instantly instead of in 10 to 60 seconds.', 'Trade-off: the cache is per device and can be 15 minutes stale.'],
+      ['AI assistant proxied by the backend', 'API keys never reach the client, and the server attaches the user identity for auditing and rate limiting.'],
+      ['S3 upload outside the DB transaction', 'Uploads finish before the commit, so PostgreSQL connections are not held during slow transfers.', 'Cost: orphaned files need a Celery cleanup job.'],
+      ['Auditable complaint email', 'Complaints go through internal SMTP with the citizen in CC and an audit BCC. That gives delivery proof without storing the complaint text.', 'Trade-off: no analytics database; analysis relies on mail logs.']
+    ],
+    result: 'Published on both stores and offered to municipal governments through public procurement. It has no active consumer users yet. The backend has 293 automated tests, and the frontend uses strict TypeScript and linting. CI/CD runs on GitHub Actions, with OTA hotfixes through EAS.',
+    stack: ['App: React Native, Expo, Expo Router, TypeScript, Axios', 'Backend: Django, Django REST Framework, PostgreSQL 16, Celery, Redis', 'Infra: AWS S3, Render, Google Maps, Resend, GitHub Actions, EAS']
+  }
 ];
 
-$('#tabs').innerHTML = C.map(c => `<button class="tab" role="tab" data-k="${c.id}" aria-selected="false" aria-controls="${c.id === 'nix' ? 'case-nix' : c.id === 'carnaval' ? 'case-carnaval' : c.id === 'click' ? 'case-click' : 'case-other'}"><span class="logo-slot tab-logo" aria-label="Logo slot for ${c.n}">${c.logo ? `<img src="${c.logo}" alt="${c.n} Logo">` : 'logo'}</span><b>${c.n}</b><span>${c.d}</span></button>`).join('');
+const li = a => a.map(x => `<li>${x}</li>`).join('');
 
-function show(k) {
+$('#tabs').innerHTML = C.map(c => `<button class="tab" role="tab" id="tab-${c.id}" data-k="${c.id}" aria-selected="false" aria-controls="panel"><!-- TODO: ${c.n} logo goes inside this slot --><span class="slot" aria-hidden="true"></span><b>${c.n}</b><span class="d">${c.line}</span></button>`).join('');
+
+function show(k, animate) {
+  const c = C.find(x => x.id === k), p = $('#panel');
   document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.k === k));
-  const o = $('#case-other'), P = { nix: '#case-nix', carnaval: '#case-carnaval', click: '#case-click' };
-  ['#case-nix', '#case-carnaval', '#case-click', '#case-other'].forEach(s => $(s).hidden = s !== (P[k] || '#case-other'));
-  if (!P[k]) {
-    const c = C.find(x => x.id === k);
-    o.innerHTML = `<h3 class="ct">${c.n}</h3><p class="sub">${c.d}</p><div class="res"><h3>Want the full case study?</h3><p>I can walk through the problem, technical decisions, and results of ${c.n} in a quick conversation.</p><a class="btn" href="https://wa.me/5521998837786?text=${encodeURIComponent('Hi Samuel, I would like to see the ' + c.n + ' case study')}" target="_blank" rel="noopener">Request case study for ${c.n}</a></div>`;
+  p.setAttribute('aria-labelledby', `tab-${k}`);
+  p.innerHTML = `<!-- TODO: ${c.n} cover image goes inside this slot -->
+<div class="img cover" role="img" aria-label="${c.n} cover placeholder"></div>
+<h3 class="ct">${c.n}</h3>
+<p class="meta">Built at Infinix</p>
+<ul class="tags">${li(c.tags)}</ul>
+<div class="cols"><div><h4>The problem</h4><p>${c.problem}</p></div><div><h4>My role</h4><p>${c.role}</p></div></div>
+<h4>Key decisions</h4>
+<div class="decs">${c.dec.map(d => `<div class="dec"><b>${d[0]}</b><p>${d[1]}</p>${d[2] ? `<p class="cost">${d[2]}</p>` : ''}</div>`).join('')}</div>
+<h4>Result</h4><p>${c.result}</p>
+<h4>Stack</h4><ul class="l">${li(c.stack)}</ul>`;
+  if (animate && !RM) {
+    p.classList.remove('swap');
+    void p.offsetWidth;
+    p.classList.add('swap');
   }
 }
 
 $('#tabs').onclick = e => {
   const t = e.target.closest('.tab');
-  if (t) show(t.dataset.k);
+  if (t) show(t.dataset.k, true);
 };
 
 show('nix');
